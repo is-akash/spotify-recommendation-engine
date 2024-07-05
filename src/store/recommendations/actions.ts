@@ -1,11 +1,11 @@
 import { Action } from "redux";
 import { ThunkAction } from "redux-thunk";
 import { RootState } from "../index";
-// import {
-//     getAvailableGenreSeeds,
-//     getRecommendations,
-// } from "../../api/recommendations";
-// import { getSearchItems, SearchTypes } from "../../api/search";
+import {
+    getAvailableGenreSeeds,
+    getRecommendations,
+} from "../../api/recommendations";
+import { getSearchItems, SearchTypes } from "../../api/search";
 import { Artist } from "../../interfaces/spotify/artist";
 import { Track } from "../../interfaces/spotify/track";
 import {
@@ -16,11 +16,9 @@ import {
     SET_ACTIVE_SEED_SLOT,
     SET_RECOMMENDATION_RESULTS,
 } from "./types";
-// import { isString } from "util";
+import { isString } from "lodash";
 
-export function populateGenreSeeds(
-    seeds: Array<string>
-): RecommendationActionTypes {
+export function populateGenreSeeds(seeds: string[]): RecommendationActionTypes {
     return {
         type: POPULATE_GENRE_SEEDS,
         payload: seeds,
@@ -31,12 +29,12 @@ export function fetchAndPopulateGenreSeeds(): ThunkAction<
     void,
     RootState,
     unknown,
-    Action<Array<string>>
+    Action
 > {
-    return async function (dispatch: any, getState: any) {
+    return async function (dispatch, getState) {
         try {
             const response = await getAvailableGenreSeeds(
-                getState().authentication.access_token
+                getState().authentication.access_token!
             );
             const data = await response.json();
 
@@ -62,11 +60,11 @@ export function searchItems(
 export function fetchSearchItems(
     query: string,
     types: Array<SearchTypes>
-): ThunkAction<void, RootState, unknown, Action<Array<string>>> {
-    return async function (dispatch: any, getState: any) {
+): ThunkAction<void, RootState, unknown, Action> {
+    return async function (dispatch, getState) {
         try {
             const response = await getSearchItems(
-                getState().authentication.access_token,
+                getState().authentication.access_token!,
                 query,
                 types
             );
@@ -111,9 +109,9 @@ export function fetchRecommendationResults(): ThunkAction<
     void,
     RootState,
     unknown,
-    Action<Array<string>>
+    Action
 > {
-    return async function (dispatch: any, getState: any) {
+    return async function (dispatch, getState) {
         try {
             const seeds = getState().recommendation.selectedSeeds as Array<
                 Artist | Track | string | null
@@ -130,7 +128,7 @@ export function fetchRecommendationResults(): ThunkAction<
                 .map((genre) => genre! as string);
 
             const response = await getRecommendations(
-                getState().authentication.access_token,
+                getState().authentication.access_token!,
                 artists,
                 tracks,
                 genres
