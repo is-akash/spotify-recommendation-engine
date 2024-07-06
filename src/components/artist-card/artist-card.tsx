@@ -1,5 +1,5 @@
+import { Artist } from "../../interfaces";
 import "./artist-card.scss";
-import { Artist } from "../../interfaces/spotify/artist";
 
 interface ArtistCardProps {
     artist: Artist;

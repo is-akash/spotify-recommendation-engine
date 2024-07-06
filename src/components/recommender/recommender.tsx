@@ -1,7 +1,67 @@
 import "./recommender.scss";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+    populateGenreSeeds,
+    setActiveSeedSlot,
+} from "../../store/recommendationSlice/recommendationSlice";
+import { getAvailableGenreSeeds } from "../../utils/lib/spotify-api/recommendations";
+import CombinedSearch from "../combined-search/combined-search";
+import { selectRecommendationState } from "../../store/recommendationSlice/selectRecommendationState";
+import { SeedSlot } from "../seed-slot/seed-slot";
 
-const Recommender = () => {
-    return <div>Recommender</div>;
+const Recommender: React.FC = () => {
+    const dispatch = useDispatch();
+    const { access_token, availableGenreSeeds, selectedSeeds } = useSelector(
+        selectRecommendationState
+    );
+
+    useEffect(() => {
+        if (!availableGenreSeeds) {
+            if (access_token) {
+                getAvailableGenreSeeds(access_token)
+                    .then((genres: string[]) => {
+                        dispatch(populateGenreSeeds(genres));
+                    })
+                    .catch((err) => {
+                        console.log("Error while fetching genres", err);
+                    });
+            }
+        }
+    }, [access_token, dispatch, availableGenreSeeds]);
+
+    return (
+        <div className='recommender'>
+            <header>
+                <h1>Recommender Page</h1>
+            </header>
+            <section className='seeds'>
+                <ul className='seed-slots'>
+                    {selectedSeeds?.map((seed, index) => (
+                        <li
+                            key={index}
+                            className='slot'
+                            onClick={() => dispatch(setActiveSeedSlot(index))}
+                        >
+                            <SeedSlot seed={seed} />
+                        </li>
+                    ))}
+                </ul>
+                <p>
+                    You can select up to 5 seeds to base your recommendations
+                    on.
+                </p>
+                <p>Type album, artist, episode, playlist or any show names.</p>
+            </section>
+            <section className='tools'>
+                <CombinedSearch />
+                {/* <RecommendationResults /> */}
+            </section>
+            <nav>
+                <a href='/'>Home</a> | <a href='/about'>About</a>
+            </nav>
+        </div>
+    );
 };
 
 export default Recommender;

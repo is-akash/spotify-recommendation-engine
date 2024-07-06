@@ -1,21 +1,28 @@
-import axios, { AxiosResponse } from "axios";
+import axios from "axios";
 
 /**
  * @param accessToken type string [required]
  * @returns A string of array containing genres
  */
 
-export function getAvailableGenreSeeds(
+export async function getAvailableGenreSeeds(
     accessToken: string
-): Promise<AxiosResponse> {
-    const url =
-        "https://api.spotify.com/v1/recommendations/available-genre-seeds";
+): Promise<string[]> {
+    try {
+        const url =
+            "https://api.spotify.com/v1/recommendations/available-genre-seeds";
 
-    return axios.get(url, {
-        headers: {
-            Authorization: `Bearer ${accessToken}`,
-        },
-    });
+        const response = await axios.get(url, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        });
+
+        return response.data.genres;
+    } catch (err) {
+        console.error("Error fetching genre seeds:", err);
+        return [];
+    }
 }
 
 /**

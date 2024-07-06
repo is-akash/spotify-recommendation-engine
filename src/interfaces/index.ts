@@ -1,3 +1,4 @@
+import { WritableDraft } from "immer";
 export interface IContextType {
     isLoading: boolean;
     setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
@@ -24,7 +25,7 @@ interface Image {
     width: number;
 }
 
-interface Artist {
+export interface Artist {
     external_urls: ExternalUrls;
     followers: Followers;
     genres: string[];
@@ -50,7 +51,7 @@ interface Restrictions {
     reason: string;
 }
 
-interface Album {
+export interface Album {
     album_type: string;
     total_tracks: number;
     available_markets: string[];
@@ -104,4 +105,15 @@ export interface Page<T> {
     offset: number;
     previous: string;
     total: number;
+}
+
+export interface RecommendationState {
+    availableGenreSeeds: string[] | null;
+    foundArtists: Artist[] | null;
+    foundTracks: Track[] | null;
+    selectedSeeds: Array<
+        string | WritableDraft<Artist> | WritableDraft<Track> | null
+    >;
+    activeSeedSlot: number | null;
+    recommendationResults: Track[] | null;
 }

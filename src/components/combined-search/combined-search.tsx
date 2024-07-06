@@ -1,54 +1,60 @@
-import React, { useState, useEffect, useCallback } from "react";
-import debounce from "lodash/debounce";
-import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "../../store";
-import { fetchSearchItems, setSeed } from "../../store/recommendations/actions";
-import { SearchTypes } from "../../utils/lib/spotify-api/search";
-import { Artist } from "../../interfaces/spotify/artist";
-import { Track } from "../../interfaces/spotify/track";
-import { capitalize } from "../../utils/capitalize";
 import "./combined-search.scss";
+import { debounce } from "lodash";
+import React, { useState, useCallback, ChangeEvent } from "react";
+
+import { getSearchItems } from "../../utils/lib/spotify-api/search";
+import { useDispatch, useSelector } from "react-redux";
 import { ArtistCard } from "../artist-card/artist-card";
 import { TrackCard } from "../track-card/track-card";
+import { SearchTypes } from "../../utils/lib/spotify-api/search";
+import {
+    setSearchItems,
+    setSeed,
+} from "../../store/recommendationSlice/recommendationSlice";
+import { selectRecommendationState } from "../../store/recommendationSlice/selectRecommendationState";
 
 const CombinedSearch: React.FC = () => {
     const dispatch = useDispatch();
-    const access_token = useSelector(
-        (state: RootState) => state.authentication.access_token
-    );
-    const foundArtists = useSelector(
-        (state: RootState) => state.recommendation.foundArtists
-    );
-    const foundTracks = useSelector(
-        (state: RootState) => state.recommendation.foundTracks
-    );
-    const genres = useSelector(
-        (state: RootState) => state.recommendation.availableGenreSeeds
-    );
-    const activeSeedSlot = useSelector(
-        (state: RootState) => state.recommendation.activeSeedSlot
-    );
-
+    const {
+        access_token,
+        foundArtists,
+        availableGenreSeeds: genres,
+    } = useSelector(selectRecommendationState);
     const [searchValue, setSearchValue] = useState("");
 
-    const debouncedSearch = useCallback(
-        debounce((query: string) => {
-            dispatch(
-                fetchSearchItems(query, [SearchTypes.Artist, SearchTypes.Track])
-            );
-            setSearchValue(query);
-        }, 500),
-        [dispatch]
+    console.log(foundArtists);
+
+    const searchItems = useCallback(
+        (query: string) => {
+            if (access_token) {
+                setSearchValue(query);
+                getSearchItems(access_token, query, [
+                    SearchTypes.Artist,
+                    SearchTypes.Track,
+                ])
+                    .then((data) => {
+                        console.log(data);
+                        const dataTosave = {
+                            artists: data.artists.items,
+                            tracks: data.tracks.items,
+                        };
+                        dispatch(setSearchItems(dataTosave));
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                    });
+            }
+        },
+        [access_token, dispatch]
     );
 
-    useEffect(() => {
-        return () => {
-            debouncedSearch.cancel();
-        };
-    }, [debouncedSearch]);
+    let debounce_fun = debounce((query: string) => {
+        searchItems(query);
+    }, 500);
 
-    const inputChange = (value: string) => {
-        debouncedSearch(value);
+    const inputChange = (event: ChangeEvent<HTMLInputElement>) => {
+        const { value } = event.target;
+        debounce_fun(value);
     };
 
     const matchingGenres = genres?.filter((genre) =>
@@ -57,21 +63,18 @@ const CombinedSearch: React.FC = () => {
 
     return (
         <div className='combined-search'>
-            <input
-                type='text'
-                onChange={(e) => inputChange(e.target.value)}
-            ></input>
+            <input type='text' onChange={inputChange} />
             <section className='search-results'>
                 <div className='artist'>
                     <label>Artists</label>
-                    {foundArtists?.length === 0 ? (
+                    {foundArtists && foundArtists?.length === 0 ? (
                         <span>No artists found</span>
                     ) : (
-                        foundArtists?.map((artist) => (
+                        foundArtists?.map((artist, index) => (
                             <li
                                 key={artist.id}
                                 onClick={() =>
-                                    dispatch(setSeed(artist, activeSeedSlot!))
+                                    dispatch(setSeed({ seed: artist, index }))
                                 }
                             >
                                 <ArtistCard artist={artist} />
@@ -82,7 +85,7 @@ const CombinedSearch: React.FC = () => {
 
                 <ul className='track'>
                     <label>Tracks</label>
-                    {foundTracks?.length === 0 ? (
+                    {/* {foundTracks?.length === 0 ? (
                         <span>No tracks found</span>
                     ) : (
                         foundTracks?.map((track) => (
@@ -95,33 +98,25 @@ const CombinedSearch: React.FC = () => {
                                 <TrackCard track={track} />
                             </li>
                         ))
-                    )}
+                    )} */}
                 </ul>
 
                 <ul className='genre'>
                     <label>Genres</label>
-                    {matchingGenres?.length === 0 && searchValue ? (
+                    {/* {matchingGenres?.length === 0 && searchValue ? (
                         <span>No genres found</span>
                     ) : (
-                        genres
-                            ?.filter((genre) =>
-                                searchValue
-                                    ? genre.includes(searchValue)
-                                    : false
-                            )
-                            ?.map((genre) => (
-                                <li
-                                    key={genre}
-                                    onClick={() =>
-                                        dispatch(
-                                            setSeed(genre, activeSeedSlot!)
-                                        )
-                                    }
-                                >
-                                    <h3>{capitalize(genre)}</h3>
-                                </li>
-                            ))
-                    )}
+                        matchingGenres?.map((genre) => (
+                            <li
+                                key={genre}
+                                onClick={() =>
+                                    dispatch(setSeed(genre, activeSeedSlot!))
+                                }
+                            >
+                                <h3>{genre}</h3>
+                            </li>
+                        ))
+                    )} */}
                 </ul>
             </section>
         </div>
