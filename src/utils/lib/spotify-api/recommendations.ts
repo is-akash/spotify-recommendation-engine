@@ -1,15 +1,21 @@
+import axios, { AxiosResponse } from "axios";
+
 /**
- * @param accessToken [required]
+ * @param accessToken type string [required]
  * @returns A string of array containing genres
  */
 
-export function getAvailableGenreSeeds(accessToken: string): Promise<Response> {
-    const request = new Request(
-        "https://api.spotify.com/v1/recommendations/available-genre-seeds"
-    );
-    request.headers.set("Authorization", "Bearer " + accessToken);
+export function getAvailableGenreSeeds(
+    accessToken: string
+): Promise<AxiosResponse> {
+    const url =
+        "https://api.spotify.com/v1/recommendations/available-genre-seeds";
 
-    return fetch(request);
+    return axios.get(url, {
+        headers: {
+            Authorization: `Bearer ${accessToken}`,
+        },
+    });
 }
 
 /**

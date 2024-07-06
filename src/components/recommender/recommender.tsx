@@ -1,5 +1,7 @@
+import "./recommender.scss";
+
 const Recommender = () => {
-    return <div>recommender</div>;
+    return <div>Recommender</div>;
 };
 
 export default Recommender;

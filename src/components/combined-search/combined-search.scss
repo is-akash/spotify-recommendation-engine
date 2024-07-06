@@ -1,0 +1,64 @@
+.combined-search {
+    display: flex;
+    flex-direction: column;
+  
+    input {
+      margin: 2px 10px 10px 20px;
+    }
+  
+    .search-results {
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: 2fr 2fr 1fr;
+      column-gap: 10px;
+      margin-left: 20px;
+  
+      .artist {
+        display: contents;
+  
+        >* {
+          grid-column: 1;
+        }      
+      }
+  
+      .track {
+        display: contents;
+  
+        >* {
+          grid-column: 2;
+        } 
+      }
+  
+      .genre {
+        display: contents;
+  
+        >* {
+          grid-column: 3;
+        } 
+  
+        h3 {
+          padding-top: 14px;
+        }
+      }
+  
+      label {
+        font-family: 'Major Mono Display', monospace;
+        margin-bottom: 10px;
+      }
+  
+      li {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding-top: 4px;
+        transition: linear 100ms background-color;
+        border-bottom: 1px solid black;
+  
+        &:hover {
+          background-color: darken($color: white, $amount: 5);
+          cursor: pointer;
+        }
+      }
+    }
+  }
+  

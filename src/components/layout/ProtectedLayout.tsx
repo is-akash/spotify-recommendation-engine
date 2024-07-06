@@ -1,20 +1,23 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useUserContext } from "../../context";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store/store";
 
 interface ProtectedLayoutProps {
     children: React.ReactNode;
 }
 
 const ProtectedLayout: React.FC<ProtectedLayoutProps> = ({ children }) => {
-    const { isAuthenticated } = useUserContext();
+    const access_token = useSelector(
+        (state: RootState) => state.auth.access_token
+    );
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (!isAuthenticated) {
+        if (!access_token) {
             navigate("/");
         }
-    }, [navigate, isAuthenticated]);
+    }, [navigate, access_token]);
 
     return children;
 };

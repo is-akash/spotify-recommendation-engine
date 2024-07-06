@@ -1,33 +1,43 @@
-import { useNavigate } from "react-router-dom";
-import { getToken } from "../../api/authentication";
-import { useUserContext } from "../../context";
-import { login } from "../../store/authentication/actions";
-import store from "../../store/store";
 import "./home.scss";
+import { useNavigate } from "react-router-dom";
+import { getToken } from "../../utils/lib/spotify-api/authentication";
+import { useUserContext } from "../../context";
 import { SpotifyApiResponse } from "../../interfaces";
+import { useDispatch } from "react-redux";
+import { setAccessToken } from "../../store/authSlice/authSlice";
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store/store";
 
 const Home = () => {
+    const access_token = useSelector(
+        (state: RootState) => state.auth.access_token
+    );
     const { isLoading, setIsLoading } = useUserContext();
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const handleAuthenticate = async () => {
         setIsLoading(true);
         await getToken()
             .then((data: SpotifyApiResponse) => {
-                console.log(data);
                 setIsLoading(false);
-                localStorage.setItem("spotify_auth", JSON.stringify(data));
-                store.dispatch(login(data.access_token, data.expires_in));
-                navigate("/recommender");
+                dispatch(setAccessToken(data));
             })
             .catch((err) => {
                 console.error("Error getting token:", err);
             });
     };
 
+    useEffect(() => {
+        if (access_token) {
+            navigate("/recommender");
+        }
+    }, [navigate, access_token]);
+
     return (
         <section className='content'>
             <header>
-                <h1>Some sweet app name</h1>
+                <h1>Spotify Recommendation Engine</h1>
             </header>
             <section className='info'>
                 <p>
