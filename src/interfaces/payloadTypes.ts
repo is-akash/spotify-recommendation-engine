@@ -11,7 +11,8 @@ export interface setSearchItemsPayloadTypes {
     tracks: Track[];
 }
 
-export interface SetSeedPayloadTypes {
-    index: number;
-    seed: string | WritableDraft<Artist> | WritableDraft<Track> | null;
-}
+export type SetSeedPayloadTypes =
+    | string
+    | WritableDraft<Artist>
+    | WritableDraft<Track>
+    | null;

@@ -3,18 +3,18 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
     populateGenreSeeds,
-    setActiveSeedSlot,
+    removeSeedFromSeeds,
 } from "../../store/recommendationSlice/recommendationSlice";
 import { getAvailableGenreSeeds } from "../../utils/lib/spotify-api/recommendations";
 import CombinedSearch from "../combined-search/combined-search";
-import { selectRecommendationState } from "../../store/recommendationSlice/selectRecommendationState";
+import { selectReduxState } from "../../store/selectReduxState";
 import { SeedSlot } from "../seed-slot/seed-slot";
+import RecommendationResults from "../recommendation-results/recommendation-results";
 
 const Recommender: React.FC = () => {
     const dispatch = useDispatch();
-    const { access_token, availableGenreSeeds, selectedSeeds } = useSelector(
-        selectRecommendationState
-    );
+    const { access_token, availableGenreSeeds, selectedSeeds } =
+        useSelector(selectReduxState);
 
     useEffect(() => {
         if (!availableGenreSeeds) {
@@ -41,7 +41,7 @@ const Recommender: React.FC = () => {
                         <li
                             key={index}
                             className='slot'
-                            onClick={() => dispatch(setActiveSeedSlot(index))}
+                            onClick={() => dispatch(removeSeedFromSeeds(index))}
                         >
                             <SeedSlot seed={seed} />
                         </li>
@@ -51,11 +51,11 @@ const Recommender: React.FC = () => {
                     You can select up to 5 seeds to base your recommendations
                     on.
                 </p>
-                <p>Type album, artist, episode, playlist or any show names.</p>
+                <p>Type any artist, track or genre name.</p>
             </section>
             <section className='tools'>
                 <CombinedSearch />
-                {/* <RecommendationResults /> */}
+                <RecommendationResults />
             </section>
             <nav>
                 <a href='/'>Home</a> | <a href='/about'>About</a>

@@ -1,8 +1,8 @@
 import { isNull } from "lodash";
-import store from "../store/store";
+import { store } from "../store/store";
 
 export const isAuthenticated = () => {
-    const state = store.getState().authentication;
+    const state = store.getState().auth;
 
     if (isNull(state.access_token) || isNull(state.valid_until)) {
         return false;

@@ -1,27 +1,28 @@
 import "./home.scss";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getToken } from "../../utils/lib/spotify-api/authentication";
 import { useUserContext } from "../../context";
 import { SpotifyApiResponse } from "../../interfaces";
 import { useDispatch } from "react-redux";
-import { setAccessToken } from "../../store/authSlice/authSlice";
-import { useEffect } from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "../../store/store";
+import {
+    clearAccessToken,
+    setAccessToken,
+} from "../../store/authSlice/authSlice";
+import { isAuthenticated } from "../../utils/utils";
+import { AppDispatch, persistor } from "../../store/store";
 
 const Home = () => {
-    const access_token = useSelector(
-        (state: RootState) => state.auth.access_token
-    );
     const { isLoading, setIsLoading } = useUserContext();
     const navigate = useNavigate();
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<AppDispatch>();
     const handleAuthenticate = async () => {
         setIsLoading(true);
         await getToken()
             .then((data: SpotifyApiResponse) => {
                 setIsLoading(false);
                 dispatch(setAccessToken(data));
+                navigate("/recommender");
             })
             .catch((err) => {
                 console.error("Error getting token:", err);
@@ -29,10 +30,16 @@ const Home = () => {
     };
 
     useEffect(() => {
-        if (access_token) {
+        console.log(isAuthenticated());
+        if (isAuthenticated()) {
             navigate("/recommender");
+        } else {
+            dispatch(clearAccessToken());
+            persistor.purge().then(() => {
+                console.log("state is purged!");
+            });
         }
-    }, [navigate, access_token]);
+    }, [navigate, dispatch]);
 
     return (
         <section className='content'>

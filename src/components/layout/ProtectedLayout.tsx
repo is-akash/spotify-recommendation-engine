@@ -1,16 +1,14 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { RootState } from "../../store/store";
+import { selectReduxState } from "../../store/selectReduxState";
 
 interface ProtectedLayoutProps {
     children: React.ReactNode;
 }
 
 const ProtectedLayout: React.FC<ProtectedLayoutProps> = ({ children }) => {
-    const access_token = useSelector(
-        (state: RootState) => state.auth.access_token
-    );
+    const { access_token } = useSelector(selectReduxState);
     const navigate = useNavigate();
 
     useEffect(() => {

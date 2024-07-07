@@ -11,18 +11,13 @@ import {
     setSearchItems,
     setSeed,
 } from "../../store/recommendationSlice/recommendationSlice";
-import { selectRecommendationState } from "../../store/recommendationSlice/selectRecommendationState";
+import { selectReduxState } from "../../store/selectReduxState";
 
 const CombinedSearch: React.FC = () => {
     const dispatch = useDispatch();
-    const {
-        access_token,
-        foundArtists,
-        availableGenreSeeds: genres,
-    } = useSelector(selectRecommendationState);
+    const { access_token, foundArtists, foundTracks, availableGenreSeeds } =
+        useSelector(selectReduxState);
     const [searchValue, setSearchValue] = useState("");
-
-    console.log(foundArtists);
 
     const searchItems = useCallback(
         (query: string) => {
@@ -33,7 +28,6 @@ const CombinedSearch: React.FC = () => {
                     SearchTypes.Track,
                 ])
                     .then((data) => {
-                        console.log(data);
                         const dataTosave = {
                             artists: data.artists.items,
                             tracks: data.tracks.items,
@@ -57,7 +51,7 @@ const CombinedSearch: React.FC = () => {
         debounce_fun(value);
     };
 
-    const matchingGenres = genres?.filter((genre) =>
+    const matchingGenres = availableGenreSeeds?.filter((genre) =>
         searchValue ? genre.includes(searchValue) : false
     );
 
@@ -70,12 +64,10 @@ const CombinedSearch: React.FC = () => {
                     {foundArtists && foundArtists?.length === 0 ? (
                         <span>No artists found</span>
                     ) : (
-                        foundArtists?.map((artist, index) => (
+                        foundArtists?.map((artist) => (
                             <li
                                 key={artist.id}
-                                onClick={() =>
-                                    dispatch(setSeed({ seed: artist, index }))
-                                }
+                                onClick={() => dispatch(setSeed(artist))}
                             >
                                 <ArtistCard artist={artist} />
                             </li>
@@ -85,38 +77,34 @@ const CombinedSearch: React.FC = () => {
 
                 <ul className='track'>
                     <label>Tracks</label>
-                    {/* {foundTracks?.length === 0 ? (
+                    {foundTracks?.length === 0 ? (
                         <span>No tracks found</span>
                     ) : (
                         foundTracks?.map((track) => (
                             <li
                                 key={track.id}
-                                onClick={() =>
-                                    dispatch(setSeed(track, activeSeedSlot!))
-                                }
+                                onClick={() => dispatch(setSeed(track))}
                             >
                                 <TrackCard track={track} />
                             </li>
                         ))
-                    )} */}
+                    )}
                 </ul>
 
                 <ul className='genre'>
                     <label>Genres</label>
-                    {/* {matchingGenres?.length === 0 && searchValue ? (
+                    {matchingGenres?.length === 0 && searchValue ? (
                         <span>No genres found</span>
                     ) : (
                         matchingGenres?.map((genre) => (
                             <li
                                 key={genre}
-                                onClick={() =>
-                                    dispatch(setSeed(genre, activeSeedSlot!))
-                                }
+                                onClick={() => dispatch(setSeed(genre))}
                             >
                                 <h3>{genre}</h3>
                             </li>
                         ))
-                    )} */}
+                    )}
                 </ul>
             </section>
         </div>

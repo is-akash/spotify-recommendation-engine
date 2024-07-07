@@ -1,5 +1,5 @@
+import { Track } from "../../interfaces";
 import "./track-card.scss";
-import { Track } from "../../interfaces/spotify/track";
 
 interface TrackCardProps {
     track: Track;

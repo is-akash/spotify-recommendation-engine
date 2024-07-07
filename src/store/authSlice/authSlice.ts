@@ -15,15 +15,16 @@ const authSlice = createSlice({
             state,
             action: PayloadAction<setAccessTokenPayloadType>
         ) => {
+            const validUntil = Date.now() + action.payload.expires_in * 1000;
             state.access_token = action.payload.access_token;
-            state.valid_until = action.payload.expires_in;
+            state.valid_until = validUntil;
         },
         clearAccessToken: (state) => {
-            localStorage.removeItem("spotify_auth");
-            state = initialState;
+            state.access_token = null;
+            state.valid_until = null;
         },
     },
 });
 
-export const { setAccessToken } = authSlice.actions;
+export const { setAccessToken, clearAccessToken } = authSlice.actions;
 export default authSlice.reducer;
