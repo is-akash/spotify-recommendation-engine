@@ -11,6 +11,7 @@ import {
 } from "../../store/authSlice/authSlice";
 import { isAuthenticated } from "../../utils/utils";
 import { AppDispatch, persistor } from "../../store/store";
+import { Link } from "react-router-dom";
 
 const Home = () => {
     const { isLoading, setIsLoading } = useUserContext();
@@ -44,7 +45,9 @@ const Home = () => {
     return (
         <section className='content'>
             <header>
-                <h1>Spotify Recommendation Engine</h1>
+                <Link to={"/"} className='link'>
+                    <h1>Spotify Recommendation Engine</h1>
+                </Link>
             </header>
             <section className='info'>
                 <p>
@@ -52,21 +55,14 @@ const Home = () => {
                     library for tracks/artists/genres. For that we require your
                     authorization.
                 </p>
-                <p>
-                    By clicking the button below, you will be redirected to
-                    Spotify, there you need to login and authorize the app for
-                    the mentioned permissions.
-                </p>
             </section>
             <section className='authorization'>
                 <button onClick={() => handleAuthenticate()}>
-                    Click here to authenticate Spotify
+                    Click here to get started!
                 </button>
-                {isLoading && <p>Loading...</p>}
+                {isLoading && <p>Authenticating with spotify..</p>}
+                {isLoading && <p>Please wait.</p>}
             </section>
-            <nav>
-                <a href='/'>Home</a> |<a href='/about'>About</a>
-            </nav>
         </section>
     );
 };

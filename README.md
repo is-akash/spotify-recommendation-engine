@@ -1,30 +1,112 @@
-# React + TypeScript + Vite
+# Spotify Recommendation Engine
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Project Overview
 
-Currently, two official plugins are available:
+The Spotify Recommendation Engine is a web application designed to provide users with personalized music recommendations based on their selections. This project leverages various modern web development technologies and libraries to deliver a seamless and engaging user experience.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## Expanding the ESLint configuration
+-   **Personalized Music Recommendations**: Get tailored music suggestions based on your inputs and selections.
+-   **Responsive Design**: Optimized for both desktop and mobile viewing.
+-   **State Management**: Efficient state management using Redux and Redux Toolkit.
+-   **Persistent State**: Uses redux-persist to save and reload state across sessions.
+-   **Routing**: Client-side routing using React Router DOM.
+-   **Sass Support**: Styles are written using Sass for better modularity and maintainability.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Tech Stack
 
-- Configure the top-level `parserOptions` property like this:
+-   **Frontend**: React, React DOM, React Router DOM
+-   **State Management**: Redux, Redux Toolkit, React Redux, redux-persist
+-   **Styling**: Sass (node-sass)
+-   **Utilities**: Axios, Lodash
+-   **Build Tools**: Vite, TypeScript
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+## Getting Started
+
+### Prerequisites
+
+Make sure you have the following installed:
+
+-   [Node.js](https://nodejs.org/) (v14 or later)
+-   [npm](https://www.npmjs.com/) (v6 or later) or [Yarn](https://yarnpkg.com/) (v1 or later)
+
+### Installation
+
+1. Clone the repository:
+
+    ```bash
+    git clone https://github.com/skies-codes/spotify-recommendation-engine.git
+    cd spotify-recommendation-engine
+    ```
+
+2. Install the dependencies:
+
+    ```bash
+    npm install
+    # or
+    yarn install
+    ```
+
+### Running the Development Server
+
+To start the development server, run:
+
+```bash
+npm run dev
+# or
+yarn dev
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+This will start the Vite development server and you can view the application at `http://localhost:5173`.
+
+### Building for Production
+
+To build the project for production, run:
+
+```bash
+npm run build
+# or
+yarn build
+```
+
+The output will be in the `dist` directory.
+
+## Project Structure
+
+```plaintext
+spotify-recommendation-engine/
+├── public/              # Static assets
+├── src/
+│   ├── assets/          # Images, fonts, etc.
+│   ├── components/      # Reusable components
+|   ├── context/         # React Context
+|   ├── interfaces       # All interfaces and types
+│   ├── store/           # Redux store configuration & Redux slices
+│   ├── utils/           # Utils, libs etc.
+│   ├── App.tsx          # Root component
+│   ├── main.tsx         # Entry point
+├── .eslintrc.js         # ESLint configuration
+├── tsconfig.json        # TypeScript configuration
+├── vite.config.ts       # Vite configuration
+└── package.json         # Project metadata and scripts
+```
+
+## Contributing
+
+Contributions are welcome! Please open an issue or submit a pull request for any changes.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+## Acknowledgements
+
+-   [Spotify API](https://developer.spotify.com/documentation/web-api/)
+-   [Redux Toolkit](https://redux-toolkit.js.org/)
+-   [Vite](https://vitejs.dev/)
+
+---
+
+Happy coding! 🎵
+<br>
+@skies-codes

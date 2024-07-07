@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { RecommendationState } from "../../interfaces";
+import { RecommendationState, Track } from "../../interfaces";
 import {
     setSearchItemsPayloadTypes,
     SetSeedPayloadTypes,
@@ -10,7 +10,6 @@ const initialState: RecommendationState = {
     foundArtists: null,
     foundTracks: null,
     selectedSeeds: [],
-    activeSeedSlot: null,
     recommendationResults: null,
 };
 
@@ -40,6 +39,15 @@ const recommendationSlice = createSlice({
                 (_, index) => index !== action.payload
             );
         },
+        setRecommendationResults: (state, action: PayloadAction<Track[]>) => {
+            state.recommendationResults = action.payload;
+        },
+        setReset: (state) => {
+            state.foundArtists = null;
+            state.foundTracks = null;
+            state.selectedSeeds = [];
+            state.recommendationResults = null;
+        },
     },
 });
 
@@ -48,6 +56,8 @@ export const {
     setSearchItems,
     setSeed,
     removeSeedFromSeeds,
+    setRecommendationResults,
+    setReset,
 } = recommendationSlice.actions;
 
 export default recommendationSlice.reducer;

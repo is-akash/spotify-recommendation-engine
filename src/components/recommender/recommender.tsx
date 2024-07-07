@@ -57,9 +57,6 @@ const Recommender: React.FC = () => {
                 <CombinedSearch />
                 <RecommendationResults />
             </section>
-            <nav>
-                <a href='/'>Home</a> | <a href='/about'>About</a>
-            </nav>
         </div>
     );
 };

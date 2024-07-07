@@ -1,4 +1,7 @@
 import axios from "axios";
+import { store } from "../../../store/store";
+import { isString } from "lodash";
+import { Artist, Track } from "../../../interfaces";
 
 /**
  * @param accessToken type string [required]
@@ -26,23 +29,40 @@ export async function getAvailableGenreSeeds(
 }
 
 /**
- * Get recommendations based on given seeds.
+ * @returns recommendations based on given seeds.
  */
-export function getRecommendations(
-    accessToken: string,
-    seedArtists: string[] = [],
-    seedTracks: string[] = [],
-    seedGenres: string[] = []
-): Promise<Response> {
-    const apiUri = "https://api.spotify.com/v1/recommendations";
-    const request = new Request(
-        `${apiUri}?seed_tracks=${seedTracks.join(
-            ","
-        )}&seed_genres=${seedGenres.join(",")}&seed_artists=${seedArtists.join(
-            ","
-        )}`
-    );
-    request.headers.set("Authorization", "Bearer " + accessToken);
 
-    return fetch(request);
-}
+export const fetchRecommendationResults = async () => {
+    try {
+        const state = store.getState();
+        const seeds = state.recommendation.selectedSeeds;
+        const accessToken = state.auth.access_token;
+
+        const artists = seeds
+            .filter((seed) => !isString(seed) && seed?.type === "artist")
+            .map((artist) => (artist as Artist).id);
+        const tracks = seeds
+            .filter((seed) => !isString(seed) && seed?.type === "track")
+            .map((track) => (track as Track).id);
+        const genres = seeds
+            .filter((seed) => isString(seed))
+            .map((genre) => genre! as string);
+
+        const apiUri = "https://api.spotify.com/v1/recommendations";
+        const requestUri = `${apiUri}?seed_tracks=${tracks.join(
+            ","
+        )}&seed_genres=${genres.join(",")}&seed_artists=${artists.join(",")}`;
+
+        const response = await axios.get(requestUri, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        });
+
+        const data = response.data;
+        return data.tracks;
+    } catch (error) {
+        console.error("Error fetching recommendation results:", error);
+        throw error;
+    }
+};

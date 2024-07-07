@@ -114,6 +114,5 @@ export interface RecommendationState {
     selectedSeeds: Array<
         string | WritableDraft<Artist> | WritableDraft<Track> | null
     >;
-    activeSeedSlot: number | null;
     recommendationResults: Track[] | null;
 }
